@@ -1,0 +1,13 @@
+**/build/
+**/disassembly/
+**/dist/
+**/private/
+**/Makefile-*
+**/Package-*
+**/*.log
+**/__*.fil
+#!*.X/Makefile
+#!**/nbproject/configurations.xml
+#!**/nbproject/project.properties
+#!**/nbproject/project.xml
+#!src/
