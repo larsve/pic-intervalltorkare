@@ -23,12 +23,12 @@ rfRI        EQU 0x01        ; Reset instruction
 ; *** Input/Output Constants ******************************************
 
 ; Input constants
-inRhp           EQU 0x07	; Right Home Pulse
-inLhp           EQU 0x06	; Left Home Pulse
+inRhp           EQU 0x07    ; Right Home Pulse
+inLhp           EQU 0x06    ; Left Home Pulse
 
 ; Output constants
-outRunLed       EQU 0x07	; Program Running LED
-outLeftLed      EQU 0x06	; 
-outRightLed     EQU 0x05	; 
-outRunLeft      EQU 0x04	; 
-outRunRight     EQU 0x03	; 
+outRunLed       EQU 0x07    ; Program Running LED
+outLeftLed      EQU 0x06    ; 
+outRightLed     EQU 0x05    ; 
+outRunLeft      EQU 0x04    ; 
+outRunRight     EQU 0x03    ; 

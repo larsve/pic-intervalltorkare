@@ -1,6 +1,6 @@
 ;**********************************************************************
 ; Description:
-;	Startup/initialization code for PIC16F1713 MCU.
+;   Startup/initialization code for PIC16F1713 MCU.
 ;   
 ;**********************************************************************
 ; Notes:
@@ -8,9 +8,9 @@
 ;
 ;**********************************************************************
 
-    #include	"MCU_Defines.inc"
-    #include	"Defines.inc"
-    #include	"Constants.inc"
+    #include    "MCU_Defines.inc"
+    #include    "Defines.inc"
+    #include    "Constants.inc"
 
 ;***** Global declarations ********************************************
 
@@ -34,7 +34,7 @@
 ;***** Variables ******************************************************
 #ifdef ResetCause
 ; Allocate RAM addresses in bank 1 memory
-gprbank1	udata
+gprbank1    udata
 ResetFlags  res 1           ; Reset cause flags
 #ifdef ResetCounters
 WdtCnt      res 1           ; Watchdog reset counter
@@ -46,14 +46,14 @@ SurCnt      res 1           ; Stack Underflow Reset counter
 #endif
 
 ; "Shared" temp variables..
-Temp_Data	udata_ovr	0x6e
-Temp		res 1
+Temp_Data   udata_ovr   0x6e
+Temp        res 1
 #endif
         
 ;***** Constants ******************************************************
 
 ;***** Code Section ***************************************************
-PROG0		code
+PROG0       code
 
 ;**********************************************************************
 ; Do_Startup
@@ -64,28 +64,28 @@ Do_Startup
     banksel FVRCON
     bsf     FVRCON, FVREN
     bsf     FVRCON, TSEN
-    bsf     FVRCON, TSRNG   ; Temperature range Vdd - 4V
+    bsf     FVRCON, TSRNG       ; Temperature range Vdd - 4V
     
     ; Configure Oscillator
     banksel OSCCON
-    movlw   B'01110000' ; 8Mhz, No PLL, Clock source from FOSC in __CONFIG1
+    movlw   B'01110000'         ; 8Mhz, No PLL, Clock source from FOSC in __CONFIG1
 #if OSC == 32
-    movlw   b'11110000'	; 32MHz, 4x PLL, internal oscillator
+    movlw   b'11110000'         ; 32MHz, 4x PLL, internal oscillator
 #endif
 #if OSC == 16
-    movlw   b'01111010'	; 16MHz, No PLL, internal oscillator
+    movlw   b'01111010'         ; 16MHz, No PLL, internal oscillator
 #endif
 #if OSC == 8
-    movlw   b'01110010'	; 8MHz, No PLL, internal oscillator
+    movlw   b'01110010'         ; 8MHz, No PLL, internal oscillator
 #endif
 #if OSC == 4
-    movlw   b'01101010'	; 4MHz, No PLL, internal oscillator
+    movlw   b'01101010'         ; 4MHz, No PLL, internal oscillator
 #endif
 #if OSC == 2
-    movlw   b'01100010'	; 2MHz, No PLL, internal oscillator
+    movlw   b'01100010'         ; 2MHz, No PLL, internal oscillator
 #endif
 #if OSC == 1
-    movlw   b'01011010'	; 1MHz, No PLL, internal oscillator
+    movlw   b'01011010'         ; 1MHz, No PLL, internal oscillator
 #endif
     movwf   OSCCON
 
@@ -97,7 +97,7 @@ Do_Startup
     ; Enable watchdog timer
     clrwdt
     banksel WDTCON
-    movlw B'00111' << 1 | 1 ; Enable WDT and set timeout to 128ms (00111)
+    movlw B'00111' << 1 | 1     ; Enable WDT and set timeout to 128ms (00111)
     movwf   WDTCON
 #endif
     
@@ -128,43 +128,43 @@ CheckResetCause
     
     ; Check if it's a POR
     btfsc   INDF0, NOT_POR
-    goto    $ + 3           ; No, check other reset causes..
+    goto    $ + 3               ; No, check other reset causes..
     bsf     ResetFlags, rfPOR
     goto    ResetCauseChecked
     
     ; Check if it's a BOR
     btfsc   INDF0, NOT_BOR
-    goto    $ + 3           ; No, check other reset causes..
+    goto    $ + 3               ; No, check other reset causes..
     bsf     ResetFlags, rfBOR
     goto    ResetCauseChecked
     
     ; Check if it's a WDT reset
     btfsc   STATUS, NOT_TO
-    goto    $ + 3           ; No, check other reset causes..
+    goto    $ + 3               ; No, check other reset causes..
     bsf     ResetFlags, rfWDT
     goto    ResetCauseChecked
     
     ; Check if it's a MCLR reset
     btfsc   INDF0, NOT_RMCLR
-    goto    $ + 3           ; No, check other reset causes..
+    goto    $ + 3               ; No, check other reset causes..
     bsf     ResetFlags, rfMCLR
     goto    ResetCauseChecked
     
     ; Check if it's a reset instruction that caused the reset
     btfsc   INDF0, NOT_RI
-    goto    $ + 3           ; No, check other reset causes..
+    goto    $ + 3               ; No, check other reset causes..
     bsf     ResetFlags, rfRI
     goto    ResetCauseChecked
     
     ; Check for stack overflow reset
     btfsc   INDF0, STKOVF
-    goto    $ + 3           ; No, check other reset causes..
+    goto    $ + 3               ; No, check other reset causes..
     bsf     ResetFlags, rfSTKOF
     goto    ResetCauseChecked
     
     ; Check for stack underflow reset
     btfsc   INDF0, STKUNF
-    goto    $ + 3           ; No, check other reset causes..
+    goto    $ + 3               ; No, check other reset causes..
     bsf     ResetFlags, rfSTKUF
 ResetCauseChecked
 
@@ -196,12 +196,12 @@ ResetCauseChecked
     ; Power On Reset?
     btfss   ResetFlags, rfPOR
     return
-    clrf    WdtCnt          ; Yes it's a POR, clear/initialize alla memory locations
+    clrf    WdtCnt              ; Yes it's a POR, clear/initialize alla memory locations
     clrf    MClrCnt
     clrf    ResetCnt
     clrf    BorCnt
-    clrf    SorCnt          ; Stack Overflow Reset
-    clrf    SurCnt          ; Stack Underflow Reset
+    clrf    SorCnt              ; Stack Overflow Reset
+    clrf    SurCnt              ; Stack Underflow Reset
 #endif
     return
 #endif

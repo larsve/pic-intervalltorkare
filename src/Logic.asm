@@ -1,8 +1,8 @@
 ;**********************************************************************
 ; Description:
-;	Main logic, this should be the router or switch that monitors and
-;	controls the other parts and make them work with eachother.
-;	Note. The A/D part should be moved to a separate unit.
+;   Main logic, this should be the router or switch that monitors and
+;   controls the other parts and make them work with eachother.
+;   Note. The A/D part should be moved to a separate unit.
 ;   
 ;**********************************************************************
 ; Notes:
@@ -10,12 +10,12 @@
 ;
 ;**********************************************************************
 
-    #include	"MCU_Defines.inc"
-    #include	"Constants.inc"
-    #include	"ADC.inc"
-    #include	"ISR_Timer.inc"
+    #include    "MCU_Defines.inc"
+    #include    "Constants.inc"
+    #include    "ADC.inc"
+    #include    "ISR_Timer.inc"
 
-;    errorlevel  -207			; suppress message 207 from list file
+;    errorlevel  -207           ; suppress message 207 from list file
 
 ;***** Script local defines *******************************************
 
@@ -23,11 +23,11 @@
 ;***** Global declarations ********************************************
 
     ; Methods
-    GLOBAL	Init_Logic
+    GLOBAL  Init_Logic
     GLOBAL  Do_Logic
-	
+    
     ; Variables
-;    GLOBAL	Uptime
+;    GLOBAL Uptime
 
 ;***** Extern declarations ********************************************
 
@@ -45,12 +45,12 @@
 
 ;***** Variables ******************************************************
 ; Allocate RAM addresses in unbanked memory
-;Shared_Data	udata_shr
-;LState		res 1			; Logic & ADC status bits
+;Shared_Data    udata_shr
+;LState     res 1           ; Logic & ADC status bits
 
 ; Allocate RAM addresses in bank 0 memory
-gprbank0	udata
-LState		res 1			; Logic state
+gprbank0    udata
+LState      res 1           ; Logic state
 RhLed       res 1           ; Right LED counter (10ms ticks)
 LhLed       res 1           ; Left LED counter (10ms ticks)
 Delay       res 1           ; Delay counter (100ms ticks)
@@ -60,9 +60,9 @@ RLTime      res 1
 RLCnt       res 1
         
 ; "Shared" temp variables..
-Temp_Data	udata_ovr	0x6e
-Temp		res 1
-ISRTemp		res 1
+Temp_Data   udata_ovr   0x6e
+Temp        res 1
+ISRTemp     res 1
 
 ;***** Constants ******************************************************
 ; Logic States
@@ -72,7 +72,7 @@ LS_AwaitHome     EQU 0x02
 LS_FlipBit       EQU 0x07
 
 ;***** Code Section ***************************************************
-PROG0		code
+PROG0       code
 
 ;**********************************************************************
 ; Init Logic
@@ -80,8 +80,8 @@ PROG0		code
 ;**********************************************************************
 Init_Logic
     ; Clear/init variables
-    banksel	LState
-    clrf	LState
+    banksel LState
+    clrf    LState
     clrf    RhLed
     clrf    LhLed
     clrf    Pot
@@ -108,7 +108,7 @@ Init_Logic
 ;**********************************************************************
 Do_Logic
     banksel LState
-    btfsc	Timer_Tick, TimerTick_100ms
+    btfsc   Timer_Tick, TimerTick_100ms
     clrwdt                      ; Clear Watchdog timer
     
     call    DelayTimer          ; Delay countdown
@@ -121,7 +121,7 @@ Do_Logic
     ; Specific state handlers..
     banksel LState
     movfw   LState
-    andlw	0x03
+    andlw   0x03
     brw
     goto    DelayOneSecond      ; 0x00 - LS_Delay1s
     goto    DelayInterval       ; 0x01 - LS_DelayInt
@@ -134,7 +134,7 @@ Do_Logic
     return
     
 DelayOneSecond
-    btfss	Timer_Tick, TimerTick_100ms
+    btfss   Timer_Tick, TimerTick_100ms
     return
 
     movfw   Delay
@@ -149,7 +149,7 @@ DelayOneSecond
     ; Continue into DelayInterval to check if we should start directly or hava a additional delay first
     
 DelayInterval
-    btfss	Timer_Tick, TimerTick_100ms
+    btfss   Timer_Tick, TimerTick_100ms
     return
     
     movfw   Delay
@@ -257,7 +257,7 @@ CheckLeftInput
     
     ;<editor-fold defaultstate="collapsed" desc="DelayTimer">
 DelayTimer
-    btfss	Timer_Tick, TimerTick_100ms
+    btfss   Timer_Tick, TimerTick_100ms
     return
 
     banksel Delay
@@ -274,7 +274,7 @@ LightLeftLED
     skpnz
     return
     bsf     Output, outLeftLed
-    btfss	Timer_Tick, TimerTick_10ms
+    btfss   Timer_Tick, TimerTick_10ms
     return
     decfsz  LhLed, f
     return
@@ -289,7 +289,7 @@ LightRightLED
     skpnz
     return
     bsf     Output, outRightLed
-    btfss	Timer_Tick, TimerTick_10ms
+    btfss   Timer_Tick, TimerTick_10ms
     return
     decfsz  RhLed, f
     return
@@ -342,14 +342,14 @@ GetLedTime
     movfw   RLIdx
     andlw   0x3f
     brw
-    dt	    0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x10
-    dt	    0x11, 0x12, 0x12, 0x13, 0x13, 0x14, 0x14, 0x14
-    dt	    0x14, 0x14, 0x14, 0x14, 0x13, 0x13, 0x12, 0x12
-    dt	    0x11, 0x10, 0x10, 0x0F, 0x0E, 0x0D, 0x0C, 0x0B
-    dt	    0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x04
-    dt	    0x03, 0x02, 0x02, 0x01, 0x01, 0x00, 0x00, 0x00
-    dt	    0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x02, 0x02
-    dt	    0x03, 0x04, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09
+    dt      0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x10
+    dt      0x11, 0x12, 0x12, 0x13, 0x13, 0x14, 0x14, 0x14
+    dt      0x14, 0x14, 0x14, 0x14, 0x13, 0x13, 0x12, 0x12
+    dt      0x11, 0x10, 0x10, 0x0F, 0x0E, 0x0D, 0x0C, 0x0B
+    dt      0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x04
+    dt      0x03, 0x02, 0x02, 0x01, 0x01, 0x00, 0x00, 0x00
+    dt      0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x02, 0x02
+    dt      0x03, 0x04, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09
 ;</editor-fold>
 
-	END
+    END

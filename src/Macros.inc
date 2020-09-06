@@ -1,17 +1,17 @@
 ;**********************************************************************
 ; Description:
-;	Misc macros.
-;	
+;   Misc macros.
+;   
 ;**********************************************************************
 ; Notes:
-;	
-;	
+;   
+;   
 ;**********************************************************************
 
 ; Clear multi byte counter
 ClearCounter macro CounterLSB, NoOfBytes
     local i = NoOfBytes - 1
-#ifdef __16F886	
+#ifdef __16F886
     SetFsr CounterLSB
     clrf    INDF
     while i > 0
@@ -20,7 +20,7 @@ ClearCounter macro CounterLSB, NoOfBytes
     i -= 1
     endw
 #endif
-#ifdef __16F1713	
+#ifdef __16F1713
     movlw   High CounterLSB
     movwf   FSR0H
     movlw   CounterLSB
@@ -37,21 +37,21 @@ ClearCounter macro CounterLSB, NoOfBytes
 IncCounter macro CounterLSB, NoOfBytes
     local i = NoOfBytes
     local j = 0
-#ifdef __16F886	
+#ifdef __16F886
     SetFsr CounterLSB
     while i > 0
     i -= 1
     j = i * 4 - 1
-    incf	INDF, F
+    incf    INDF, F
     if i == 0
-    	exitm
+        exitm
     endif
-    btfss	STATUS, Z
-    goto	$ + j
-    incf	FSR, F
+    btfss   STATUS, Z
+    goto    $ + j
+    incf    FSR, F
     endw
 #endif
-#ifdef __16F1713	
+#ifdef __16F1713
     movlw   High CounterLSB
     movwf   FSR0H
     movlw   CounterLSB
@@ -61,7 +61,7 @@ IncCounter macro CounterLSB, NoOfBytes
     j = i * 4 - 1
     incf    INDF0, F
     if i == 0
-    	exitm
+        exitm
     endif
     btfss   STATUS, Z
     goto    $ + j
@@ -78,18 +78,18 @@ DecCounter macro CounterLSB, NoOfBytes
     while i > 0
     i -= 1
     j = i * 6 - 3
-    decf	INDF, F
+    decf    INDF, F
     if i == 0
-    	exitm
+        exitm
     endif
-    movfw	INDF
-    xorlw	0xff
-    btfss	STATUS, Z
-    goto	$ + j
-    incf	FSR, F
+    movfw   INDF
+    xorlw   0xff
+    btfss   STATUS, Z
+    goto    $ + j
+    incf    FSR, F
     endw
 #endif
-#ifdef __16F1713	
+#ifdef __16F1713
     movlw   High CounterLSB
     movwf   FSR0H
     movlw   CounterLSB
@@ -97,15 +97,15 @@ DecCounter macro CounterLSB, NoOfBytes
     while i > 0
     i -= 1
     j = i * 6 - 3
-    decf	INDF0, F
+    decf    INDF0, F
     if i == 0
-    	exitm
+        exitm
     endif
-    movfw	INDF0
-    xorlw	0xff
-    btfss	STATUS, Z
-    goto	$ + j
-    incf	FSR0, F
+    movfw   INDF0
+    xorlw   0xff
+    btfss   STATUS, Z
+    goto    $ + j
+    incf    FSR0, F
     endw
 #endif
     endm
@@ -113,50 +113,50 @@ DecCounter macro CounterLSB, NoOfBytes
 #ifdef __16F886
 ; FSR helper macros
 SetFsr macro FsrBuffer
-;	movlw	HIGH FsrBuffer
-;	andlw	0x01
-;	btfss	STATUS, Z
-;	bsf		STATUS, IRP
-;	btfsc	STATUS, Z
-;	bcf		STATUS, IRP
-	movlw	FsrBuffer
-	movwf	FSR					; FSR = pointer to buffer
-	bankisel	FsrBuffer
-	endm
+;   movlw   HIGH FsrBuffer
+;   andlw   0x01
+;   btfss   STATUS, Z
+;   bsf     STATUS, IRP
+;   btfsc   STATUS, Z
+;   bcf     STATUS, IRP
+    movlw   FsrBuffer
+    movwf   FSR                 ; FSR = pointer to buffer
+    bankisel    FsrBuffer
+    endm
 
 ; Set FSR with a litteral offset
 SetFsrOfsL macro FsrBuffer, Offset
-;	movlw	HIGH FsrBuffer
-;	andlw	0x01
-;	btfss	STATUS, Z
-;	bsf		STATUS, IRP
-;	btfsc	STATUS, Z
-;	bcf		STATUS, IRP
-;	movlw	FsrBuffer
-;	movwf	FSR					; FSR = pointer to buffer
-;	movlw	Offset
-;	addwf	FSR, F
-;	bankisel	FsrBuffer
-	SetFsr	FsrBuffer
-	movlw	Offset
-	addwf	FSR, F
-	endm
+;   movlw   HIGH FsrBuffer
+;   andlw   0x01
+;   btfss   STATUS, Z
+;   bsf     STATUS, IRP
+;   btfsc   STATUS, Z
+;   bcf     STATUS, IRP
+;   movlw   FsrBuffer
+;   movwf   FSR                 ; FSR = pointer to buffer
+;   movlw   Offset
+;   addwf   FSR, F
+;   bankisel    FsrBuffer
+    SetFsr  FsrBuffer
+    movlw   Offset
+    addwf   FSR, F
+    endm
 
 ; Set FSR with a fileregister offset
 SetFsrOfsF macro FsrBuffer, Offset
-;	movlw	HIGH FsrBuffer
-;	andlw	0x01
-;	btfss	STATUS, Z
-;	bsf		STATUS, IRP
-;	btfsc	STATUS, Z
-;	bcf		STATUS, IRP
-;	movlw	FsrBuffer
-;	addwf	Offset, w
-;	movwf	FSR					; FSR = pointer to buffer
-;	bankisel	FsrBuffer
-	SetFsr	FsrBuffer
-	movfw	Offset
-	addwf	FSR, F
-	endm
+;   movlw   HIGH FsrBuffer
+;   andlw   0x01
+;   btfss   STATUS, Z
+;   bsf     STATUS, IRP
+;   btfsc   STATUS, Z
+;   bcf     STATUS, IRP
+;   movlw   FsrBuffer
+;   addwf   Offset, w
+;   movwf   FSR                 ; FSR = pointer to buffer
+;   bankisel    FsrBuffer
+    SetFsr  FsrBuffer
+    movfw   Offset
+    addwf   FSR, F
+    endm
 #endif
 
